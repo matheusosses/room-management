@@ -15,7 +15,5 @@ public class Sala {
     private Long id;
 
     @Column(nullable = false)
-    private String nome;
-
     private Integer capacidade;
 }
