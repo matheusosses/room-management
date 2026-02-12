@@ -1,5 +1,6 @@
 package br.com.matheusosses.room_management.models.sala;
 
+import br.com.matheusosses.room_management.models.reserva.Reserva;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
