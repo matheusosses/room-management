@@ -1,14 +1,14 @@
 package br.com.matheusosses.room_management.models.sala;
 
-import br.com.matheusosses.room_management.models.reserva.Reserva;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @Entity
 @Table(name = "salas")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Sala {
 
     @Id

@@ -1,11 +1,14 @@
 package br.com.matheusosses.room_management.models.usuario;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @Entity
 @Table(name = "usuarios")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Usuario {
 
     @Id
