@@ -8,7 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,4 +37,12 @@ public class Reserva {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    public Reserva(Usuario usuario, Sala sala, LocalDateTime inicioReserva, LocalDateTime fimReserva){
+        this.usuario = usuario;
+        this.sala = sala;
+        this.inicioReserva = inicioReserva;
+        this.fimReserva = fimReserva;
+        this.status = Status.CONFIRMADA;
+    }
 }
