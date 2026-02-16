@@ -2,6 +2,7 @@ package br.com.matheusosses.room_management.models.usuario;
 
 import br.com.matheusosses.room_management.models.usuario.dto.DadosUsuarioDto;
 import br.com.matheusosses.room_management.models.usuario.dto.UsuarioDto;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDto> criarUsuario(@RequestBody DadosUsuarioDto dto) {
+    public ResponseEntity<UsuarioDto> criarUsuario(@RequestBody @Valid DadosUsuarioDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.criarUsuario(dto));
     }
 
@@ -34,7 +35,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDto> atualizarUsuario(@PathVariable Long id, @RequestBody DadosUsuarioDto dto) {
+    public ResponseEntity<UsuarioDto> atualizarUsuario(@PathVariable Long id, @RequestBody @Valid DadosUsuarioDto dto) {
         return ResponseEntity.ok(service.atualizarUsuario(id, dto));
     }
 }

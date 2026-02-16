@@ -2,6 +2,7 @@ package br.com.matheusosses.room_management.models.sala;
 
 import br.com.matheusosses.room_management.models.sala.dto.DadosSalaDto;
 import br.com.matheusosses.room_management.models.sala.dto.SalaDto;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class SalaController {
     }
 
     @PostMapping
-    public ResponseEntity<SalaDto> criarSala(@RequestBody DadosSalaDto dto) {
+    public ResponseEntity<SalaDto> criarSala(@RequestBody @Valid DadosSalaDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.criarSala(dto));
     }
 
@@ -34,7 +35,7 @@ public class SalaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SalaDto> atualizarSala(@PathVariable Long id, @RequestBody DadosSalaDto dto) {
+    public ResponseEntity<SalaDto> atualizarSala(@PathVariable Long id, @RequestBody @Valid DadosSalaDto dto) {
         return ResponseEntity.ok(service.atualizarSala(id, dto));
     }
 }
