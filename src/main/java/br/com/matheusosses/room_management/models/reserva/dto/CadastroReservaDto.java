@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
-public record DadosReservaDto(
+public record CadastroReservaDto(
 
     @NotNull
     Long salaId,
