@@ -9,6 +9,9 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -49,19 +52,20 @@ class SalaControllerTest {
     }
 
     @Test
-    void deveRetornarStatusOkEListaDeSalas_quandoListarSalas() throws Exception {
+    void deveRetornarStatusOkEPageDeSalas_quandoListarSalas() throws Exception {
         List<SalaDto> lista = List.of(new SalaDto(1L, 10), new SalaDto(2L, 20));
-        when(service.listarSalas()).thenReturn(lista);
+        when(service.listarSalas(any(Pageable.class))).thenReturn(new PageImpl<>(lista, PageRequest.of(0, 10), 2));
 
         mockMvc.perform(get("/salas"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].capacidade").value(10))
-                .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].capacidade").value(20));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].capacidade").value(10))
+                .andExpect(jsonPath("$.content[1].id").value(2))
+                .andExpect(jsonPath("$.content[1].capacidade").value(20))
+                .andExpect(jsonPath("$.totalElements").value(2));
 
-        verify(service).listarSalas();
+        verify(service).listarSalas(any(Pageable.class));
     }
 
     @Test

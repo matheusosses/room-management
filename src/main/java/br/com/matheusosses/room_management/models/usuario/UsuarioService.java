@@ -4,6 +4,8 @@ import br.com.matheusosses.room_management.exceptions.EntidadeNaoEncontradaExcep
 import br.com.matheusosses.room_management.exceptions.RegraDeNegocioException;
 import br.com.matheusosses.room_management.models.usuario.dto.DadosUsuarioDto;
 import br.com.matheusosses.room_management.models.usuario.dto.UsuarioDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +30,8 @@ public class UsuarioService {
         return new UsuarioDto(usuarioCriado);
     }
 
-    public List<UsuarioDto> listarUsuarios() {
-        List<Usuario> usuarios = repository.findAll();
-
-        return usuarios.stream()
-            .map(UsuarioDto::new)
-            .toList();
+    public Page<UsuarioDto> listarUsuarios(Pageable pageable) {
+        return repository.findAll(pageable).map(UsuarioDto::new);
     }
 
     public UsuarioDto detalharUsuario(Long id) {

@@ -11,6 +11,9 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -58,19 +61,20 @@ class ReservaControllerTest {
     }
 
     @Test
-    void deveRetornarStatusOkEListaDeReservas_quandoListarReservas() throws Exception {
+    void deveRetornarStatusOkEPageDeReservas_quandoListarReservas() throws Exception {
         LocalDateTime inicio = LocalDateTime.now().plusDays(1);
         List<ReservaDto> lista = List.of(new ReservaDto(1L, 1L, 1L, inicio, inicio.plusHours(1)));
-        when(service.listarReservas()).thenReturn(lista);
+        when(service.listarReservas(any(Pageable.class))).thenReturn(new PageImpl<>(lista, PageRequest.of(0, 10), 1));
 
         mockMvc.perform(get("/reservas"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].salaId").value(1))
-                .andExpect(jsonPath("$[0].usuarioId").value(1));
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].salaId").value(1))
+                .andExpect(jsonPath("$.content[0].usuarioId").value(1))
+                .andExpect(jsonPath("$.totalElements").value(1));
 
-        verify(service).listarReservas();
+        verify(service).listarReservas(any(Pageable.class));
     }
 
     @Test

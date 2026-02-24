@@ -3,6 +3,8 @@ package br.com.matheusosses.room_management.models.sala;
 import br.com.matheusosses.room_management.exceptions.EntidadeNaoEncontradaException;
 import br.com.matheusosses.room_management.models.sala.dto.DadosSalaDto;
 import br.com.matheusosses.room_management.models.sala.dto.SalaDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +25,8 @@ public class SalaService {
         return new SalaDto(salaCriada);
     }
 
-    public List<SalaDto> listarSalas() {
-        List<Sala> salas = repository.findAll();
-
-        return salas.stream()
-            .map(SalaDto::new)
-            .toList();
+    public Page<SalaDto> listarSalas(Pageable pageable) {
+        return repository.findAll(pageable).map(SalaDto::new);
     }
 
     public SalaDto detalharSala(Long id) {

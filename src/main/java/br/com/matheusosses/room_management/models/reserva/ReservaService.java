@@ -10,6 +10,8 @@ import br.com.matheusosses.room_management.models.sala.SalaRepository;
 import br.com.matheusosses.room_management.models.usuario.Usuario;
 import br.com.matheusosses.room_management.models.usuario.UsuarioRepository;
 import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,12 +54,8 @@ public class ReservaService {
         return new ReservaDto(novaReserva);
     }
 
-    public List<ReservaDto> listarReservas() {
-        List<Reserva> reservas = reservaRepository.buscarReservas();
-
-        return reservas.stream()
-            .map(ReservaDto::new)
-            .toList();
+    public Page<ReservaDto> listarReservas(Pageable pageable) {
+        return reservaRepository.buscarReservas(pageable).map(ReservaDto::new);
     }
 
     @Transactional

@@ -9,6 +9,9 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -50,22 +53,23 @@ class UsuarioControllerTest {
     }
 
     @Test
-    void deveRetornarStatusOkEListaDeUsuarios_quandoListarUsuarios() throws Exception {
+    void deveRetornarStatusOkEPageDeUsuarios_quandoListarUsuarios() throws Exception {
         List<UsuarioDto> lista = List.of(
                 new UsuarioDto(1L, "João", "joao@email.com"),
                 new UsuarioDto(2L, "Maria", "maria@email.com")
         );
-        when(service.listarUsuarios()).thenReturn(lista);
+        when(service.listarUsuarios(any(Pageable.class))).thenReturn(new PageImpl<>(lista, PageRequest.of(0, 10), 2));
 
         mockMvc.perform(get("/usuarios"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].nome").value("João"))
-                .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].nome").value("Maria"));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].nome").value("João"))
+                .andExpect(jsonPath("$.content[1].id").value(2))
+                .andExpect(jsonPath("$.content[1].nome").value("Maria"))
+                .andExpect(jsonPath("$.totalElements").value(2));
 
-        verify(service).listarUsuarios();
+        verify(service).listarUsuarios(any(Pageable.class));
     }
 
     @Test

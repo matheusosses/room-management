@@ -8,6 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
@@ -44,16 +48,19 @@ class SalaServiceTest {
     }
 
     @Test
-    void deveRetornarListaDeSalaDto_quandoListarSalas() {
+    void deveRetornarPageDeSalaDto_quandoListarSalas() {
         Sala sala = new Sala(new DadosSalaDto(5));
         ReflectionTestUtils.setField(sala, "id", 1L);
-        when(repository.findAll()).thenReturn(List.of(sala));
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Sala> page = new PageImpl<>(List.of(sala), pageable, 1);
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
 
-        List<SalaDto> resultado = service.listarSalas();
+        Page<SalaDto> resultado = service.listarSalas(pageable);
 
-        assertThat(resultado).hasSize(1);
-        assertThat(resultado.get(0).id()).isEqualTo(1L);
-        assertThat(resultado.get(0).capacidade()).isEqualTo(5);
+        assertThat(resultado.getContent()).hasSize(1);
+        assertThat(resultado.getContent().get(0).id()).isEqualTo(1L);
+        assertThat(resultado.getContent().get(0).capacidade()).isEqualTo(5);
+        assertThat(resultado.getTotalElements()).isEqualTo(1);
     }
 
     @Test

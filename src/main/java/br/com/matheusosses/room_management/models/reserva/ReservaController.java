@@ -4,6 +4,9 @@ import br.com.matheusosses.room_management.models.reserva.dto.AtualizacaoReserva
 import br.com.matheusosses.room_management.models.reserva.dto.CadastroReservaDto;
 import br.com.matheusosses.room_management.models.reserva.dto.ReservaDto;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +29,8 @@ public class ReservaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ReservaDto>> listarReservas() {
-        return ResponseEntity.ok().body(service.listarReservas());
+    public ResponseEntity<Page<ReservaDto>> listarReservas(@PageableDefault(size = 10, sort = {"id"}) Pageable pageable) {
+        return ResponseEntity.ok(service.listarReservas(pageable));
     }
 
     @DeleteMapping("/{id}")

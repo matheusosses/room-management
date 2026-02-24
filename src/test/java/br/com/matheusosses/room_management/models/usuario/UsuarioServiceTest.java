@@ -9,6 +9,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
@@ -57,17 +61,20 @@ class UsuarioServiceTest {
     }
 
     @Test
-    void deveRetornarListaDeUsuarioDto_quandoListarUsuarios() {
+    void deveRetornarPageDeUsuarioDto_quandoListarUsuarios() {
         Usuario usuario = new Usuario(new DadosUsuarioDto("Maria", "maria@email.com"));
         ReflectionTestUtils.setField(usuario, "id", 1L);
-        when(repository.findAll()).thenReturn(List.of(usuario));
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Usuario> page = new PageImpl<>(List.of(usuario), pageable, 1);
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
 
-        List<UsuarioDto> resultado = service.listarUsuarios();
+        Page<UsuarioDto> resultado = service.listarUsuarios(pageable);
 
-        assertThat(resultado).hasSize(1);
-        assertThat(resultado.get(0).id()).isEqualTo(1L);
-        assertThat(resultado.get(0).nome()).isEqualTo("Maria");
-        assertThat(resultado.get(0).email()).isEqualTo("maria@email.com");
+        assertThat(resultado.getContent()).hasSize(1);
+        assertThat(resultado.getContent().get(0).id()).isEqualTo(1L);
+        assertThat(resultado.getContent().get(0).nome()).isEqualTo("Maria");
+        assertThat(resultado.getContent().get(0).email()).isEqualTo("maria@email.com");
+        assertThat(resultado.getTotalElements()).isEqualTo(1);
     }
 
     @Test

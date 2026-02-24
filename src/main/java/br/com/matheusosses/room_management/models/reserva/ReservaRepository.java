@@ -1,5 +1,7 @@
 package br.com.matheusosses.room_management.models.reserva;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,13 +24,14 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
         @Param("fimReserva") LocalDateTime fimReserva
     );
 
-    @Query("""
+    @Query(value = """
             SELECT r 
             FROM Reserva r 
             JOIN FETCH r.sala 
             JOIN FETCH r.usuario
-            """)
-    List<Reserva> buscarReservas();
+            """,
+        countQuery = "SELECT count(r) FROM Reserva r")
+    Page<Reserva> buscarReservas(Pageable pageable);
 
     @Query("""
             SELECT r 

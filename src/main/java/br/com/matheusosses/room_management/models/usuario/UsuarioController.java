@@ -3,6 +3,9 @@ package br.com.matheusosses.room_management.models.usuario;
 import br.com.matheusosses.room_management.models.usuario.dto.DadosUsuarioDto;
 import br.com.matheusosses.room_management.models.usuario.dto.UsuarioDto;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +28,8 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UsuarioDto>> listarUsuarios() {
-        return ResponseEntity.ok(service.listarUsuarios());
+    public ResponseEntity<Page<UsuarioDto>> listarUsuarios(@PageableDefault(size = 10, sort = {"id"}) Pageable pageable) {
+        return ResponseEntity.ok(service.listarUsuarios(pageable));
     }
 
     @GetMapping("/{id}")

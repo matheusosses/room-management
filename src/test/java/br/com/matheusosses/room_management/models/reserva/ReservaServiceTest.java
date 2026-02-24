@@ -14,6 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -137,18 +141,21 @@ class ReservaServiceTest {
     }
 
     @Test
-    void deveRetornarListaDeReservaDto_quandoListarReservas() {
+    void deveRetornarPageDeReservaDto_quandoListarReservas() {
         Sala sala = criarSala(SALA_ID);
         Usuario usuario = criarUsuario(USUARIO_ID);
         LocalDateTime inicio = LocalDateTime.now().plusDays(1);
         Reserva reserva = criarReserva(sala, usuario, inicio, inicio.plusHours(1));
-        when(reservaRepository.buscarReservas()).thenReturn(List.of(reserva));
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Reserva> page = new PageImpl<>(List.of(reserva), pageable, 1);
+        when(reservaRepository.buscarReservas(any(Pageable.class))).thenReturn(page);
 
-        List<ReservaDto> resultado = service.listarReservas();
+        Page<ReservaDto> resultado = service.listarReservas(pageable);
 
-        assertThat(resultado).hasSize(1);
-        assertThat(resultado.get(0).salaId()).isEqualTo(SALA_ID);
-        assertThat(resultado.get(0).usuarioId()).isEqualTo(USUARIO_ID);
+        assertThat(resultado.getContent()).hasSize(1);
+        assertThat(resultado.getContent().get(0).salaId()).isEqualTo(SALA_ID);
+        assertThat(resultado.getContent().get(0).usuarioId()).isEqualTo(USUARIO_ID);
+        assertThat(resultado.getTotalElements()).isEqualTo(1);
     }
 
     @Test

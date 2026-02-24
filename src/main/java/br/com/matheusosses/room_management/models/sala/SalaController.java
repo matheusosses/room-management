@@ -3,6 +3,9 @@ package br.com.matheusosses.room_management.models.sala;
 import br.com.matheusosses.room_management.models.sala.dto.DadosSalaDto;
 import br.com.matheusosses.room_management.models.sala.dto.SalaDto;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +28,8 @@ public class SalaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SalaDto>> listarSalas() {
-        return ResponseEntity.ok(service.listarSalas());
+    public ResponseEntity<Page<SalaDto>> listarSalas(@PageableDefault(size = 10, sort = {"id"}) Pageable pageable) {
+        return ResponseEntity.ok(service.listarSalas(pageable));
     }
 
     @GetMapping("/{id}")
